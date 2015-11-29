@@ -32,13 +32,11 @@
               "-data-dir",
               "/var/etcd/data",
               "-listen-client-urls",
-              "http://127.0.0.1:2379",
+              "http://127.0.0.1:2379,http://127.0.0.1:4001",
               "-advertise-client-urls",
-              "http://127.0.0.1:2379",
+              "http://127.0.0.1:2379,http://127.0.0.1:4001",
               "-initial-cluster-token",
-              "etcd-cluster-1",
-              "-discovery-srv",
-              "etcd-cluster.local"
+              "skydns-etcd"
             ],
             "image": "gcr.io/google_containers/etcd:2.0.9",
             "name": "etcd",
@@ -70,7 +68,7 @@
           },
           {
             "args": [
-              "-machines=http://localhost:2379",
+              "-machines=http://localhost:4001",
               "-addr=0.0.0.0:53",
               "-domain=cluster.local."
             ],
