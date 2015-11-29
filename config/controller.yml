@@ -1,0 +1,41 @@
+#cloud-config
+coreos:
+  update:
+    reboot-strategy: "off"  
+  flannel:
+    interface: $private_ipv4
+
+
+  units:
+  - name: install-controller.service
+    command: start
+    content: |
+      [Service]
+      ExecStart=/bin/bash /tmp/install-controller.sh
+      Type=oneshot
+
+write_files:
+- path: /run/coreos-kubernetes/options.env
+  content: |
+    ETCD_ENDPOINTS=http://10.0.0.20:2379,http://10.0.0.21:2379
+    ARTIFACT_URL={{ artifact_url }}
+
+- path: /tmp/install-controller.sh
+  content: |
+    #!/bin/bash
+    mkdir -p /opt/bin
+    /usr/bin/curl -L -o /opt/bin/kubelet -z /opt/bin/kubelet https://storage.googleapis.com/kubernetes-release/release/v1.0.6/bin/linux/amd64/kubelet
+    /usr/bin/chmod +x /opt/bin/kubelet
+    exec bash -c "$(curl --fail --silent --show-error --location '{{ artifact_url }}/scripts/install-controller.sh')"
+
+- path: /etc/kubernetes/ssl/ca.pem
+  encoding: base64
+  content: {{ ca_cert }}
+
+- path: /etc/kubernetes/ssl/apiserver.pem
+  encoding: base64
+  content: {{ api_server_cert }}
+
+- path: /etc/kubernetes/ssl/apiserver-key.pem
+  encoding: base64
+  content: {{ api_server_key }}

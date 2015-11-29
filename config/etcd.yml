@@ -1,0 +1,17 @@
+#cloud-config
+
+---
+coreos:
+  units:
+  - name: etcd2.service
+    command: start
+
+
+  etcd2:
+    discovery-srv: etcd-cluster.local
+    initial-advertise-peer-urls: http://$private_ipv4:2380
+    initial-cluster-token: etcd-cluster-1
+    initial-cluster-state: new
+    advertise-client-urls: http://$private_ipv4:2379
+    listen-client-urls: http://127.0.0.1:2379,http://$private_ipv4:2379
+    listen-peer-urls: http://127.0.0.1:2380,http://$private_ipv4:2380

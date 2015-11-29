@@ -1,0 +1,43 @@
+#cloud-config
+coreos:
+  update:
+    reboot-strategy: "off"
+
+  flannel:
+    interface: $private_ipv4
+    etcd_endpoints: http://10.0.0.20:2379,http://10.0.0.21:2379
+
+  units:
+  - name: install-worker.service
+    command: start
+    content: |
+      [Service]
+      ExecStart=/bin/bash /tmp/install-worker.sh
+      Type=oneshot
+
+write_files:
+- path: /run/coreos-kubernetes/options.env
+  content: |
+    ETCD_ENDPOINTS=http://10.0.0.20:2379,http://10.0.0.21:2379
+    CONTROLLER_ENDPOINT=https://10.0.0.50
+    ARTIFACT_URL={{ artifact_url }}
+
+- path: /tmp/install-worker.sh
+  content: |
+    #!/bin/bash
+    mkdir -p /opt/bin
+    /usr/bin/curl -L -o /opt/bin/kubelet -z /opt/bin/kubelet https://storage.googleapis.com/kubernetes-release/release/v1.0.6/bin/linux/amd64/kubelet
+    /usr/bin/chmod +x /opt/bin/kubelet
+    exec bash -c "$(curl --fail --silent --show-error --location '{{ artifact_url }}/scripts/install-worker.sh')"
+
+- path: /etc/kubernetes/ssl/ca.pem
+  encoding: base64
+  content: {{ ca_cert }}
+
+- path: /etc/kubernetes/ssl/worker.pem
+  encoding: base64
+  content: {{ worker_cert }}
+
+- path: /etc/kubernetes/ssl/worker-key.pem
+  encoding: base64
+  content: {{ worker_key }}

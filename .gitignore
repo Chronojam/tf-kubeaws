@@ -1,0 +1,6 @@
+# Certificate stuff.
+certificates/*/*.pem
+certificates/*/*.csr
+certificates/*/.srl
+
+terraform*
