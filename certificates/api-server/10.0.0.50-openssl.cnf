@@ -7,6 +7,10 @@ basicConstraints = CA:FALSE
 keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName = @alt_names
 [alt_names]
-DNS.1 = *.*.compute.internal
-DNS.2 = *.ec2.internal
-IP.1 = {{ ip_addr }}
+DNS.1 = kubernetes
+DNS.2 = kubernetes.default
+DNS.3 = kapi.chronojam.co.uk
+DNS.3 = *.*.compute.internal
+DNS.4 = *.ec2.internal
+IP.1 = 10.3.0.1
+IP.2 = 10.0.0.50

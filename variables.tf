@@ -41,12 +41,15 @@ variable "etcd_cloud_config" {
 }
 
 ## Controller ##
-variable "controller_cloud_config" {
+variable "controller_cloud_config_10_0_0_50" {
   description = "cloud config for the controller"
 }
 
 
 ## Workers ##
-variable "worker_cloud_config" {
+variable "worker_cloud_config_10_0_0_60" {
+  description = "cloud config for the worker nodes"
+}
+variable "worker_cloud_config_10_0_0_61" {
   description = "cloud config for the worker nodes"
 }

@@ -1,7 +1,7 @@
 resource "aws_instance" "kn0" {
   ami = "${var.coreos_ami}"
   instance_type = "${var.worker_instance_type}"
-  user_data = "${var.worker_cloud_config}"
+  user_data = "${var.worker_cloud_config_10_0_0_60}"
   tags = {
     role = "kubernetes_worker"
     Name = "kn0.chronojam.local"
@@ -15,6 +15,7 @@ resource "aws_instance" "kn0" {
   ]
   iam_instance_profile = "${aws_iam_instance_profile.worker_profile.name}"
   associate_public_ip_address = false
+  private_ip = "10.0.0.60"
   subnet_id = "${aws_subnet.kubernetes_subnet.id}"
   depends_on = ["aws_internet_gateway.gw"]
 }
@@ -22,7 +23,7 @@ resource "aws_instance" "kn0" {
 resource "aws_instance" "kn1" {
   ami = "${var.coreos_ami}"
   instance_type = "${var.worker_instance_type}"
-  user_data = "${var.worker_cloud_config}"
+  user_data = "${var.worker_cloud_config_10_0_0_61}"
   tags = {
     role = "kubernetes_worker"
     Name = "kn1.chronojam.local"
@@ -36,6 +37,7 @@ resource "aws_instance" "kn1" {
   ]
   iam_instance_profile = "${aws_iam_instance_profile.worker_profile.name}"
   associate_public_ip_address = false
+  private_ip = "10.0.0.61"
   subnet_id = "${aws_subnet.kubernetes_subnet.id}"
   depends_on = ["aws_internet_gateway.gw"]
 }

@@ -1,7 +1,7 @@
 resource "aws_instance" "km0" {
   ami = "${var.coreos_ami}"
   instance_type = "${var.controller_instance_type}"
-  user_data = "${var.controller_cloud_config}"
+  user_data = "${var.controller_cloud_config_10_0_0_50}"
   tags = {
     role = "kubernetes_controller"
     Name = "km0.chronojam.local"
