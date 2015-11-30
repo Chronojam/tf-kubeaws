@@ -1,0 +1,5 @@
+# Certificate files.
+*/*.pem
+*/*.csr
+*/.srl
+*/*-openssl.cnf
