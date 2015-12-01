@@ -37,7 +37,10 @@ do
   sed -e "s#{{ worker_cert }}#$worker_cert#g" | \
   sed -e "s#{{ worker_key }}#$worker_key#g" | \
   sed -e "s#{{ artifact_url }}#$artifact_url#g")
-  eval export $var_name="\$var_value"
+  # Tried several ways with eval, declare, export etc, before getting it to work like this
+  # Im trying to export variable names that have the name of the value of other variables,
+  # this makes it easier to template into terraform at a later date
+  export $( echo $var_name )="$var_value"
   echo "Processed worker $ADDR"
 done
 
@@ -52,6 +55,6 @@ do
   sed -e "s#{{ api_server_cert }}#$api_server_cert#g" | \
   sed -e "s#{{ api_server_key }}#$api_server_key#g" | \
   sed -e "s#{{ artifact_url }}#$artifact_url#g" )
-  eval export $var_name="\$var_value"
+  export $( echo $var_name )="$var_value"
   echo "Processed controller $ADDR"
 done
