@@ -49,7 +49,7 @@ do
   api_server_cert=$(cat certificates/api-server/$ADDR-apiserver.pem |base64 |sed ':a;N;$!ba;s/\n//g')
   api_server_key=$(cat certificates/api-server/$ADDR-apiserver-key.pem |base64 |sed ':a;N;$!ba;s/\n//g')
   t_var_name="TF_VAR_controller_cloud_config_$ADDR"
-  var_name=var_name=${t_var_name//"."/"_"}
+  var_name=${t_var_name//"."/"_"}
   var_value=$(cat config/controller.yml| \
   sed -e "s#{{ ca_cert }}#$ca_cert#g" | \
   sed -e "s#{{ api_server_cert }}#$api_server_cert#g" | \
