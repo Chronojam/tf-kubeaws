@@ -1,0 +1,27 @@
+resource "aws_instance" "{{ name }}" {
+  ami = "${var.coreos_ami}"
+  instance_type = "${var.instance_type}"
+  user_data = "${file(\"etcd_instances/_{{ ip_addr_f }}_userdata.yml\")}"
+  tags = {
+    role = "etcd_node"
+    Name = "{{ name }}"
+    KubernetesCluster = "${var.cluster_name}"
+  }
+  key_name = "${var.keyname}"
+  security_groups = [
+    "${aws_security_group.sg_etcd.id}",
+    "${var.kubernetes_sg_id}",
+    "${var.debugging_sg_id}"
+  ]
+  associate_public_ip_address = false
+  private_ip = "{{ ip_addr }}"
+  subnet_id = "${var.subnet_id}"
+}
+
+resource "aws_route53_record" "{{ name }}" {
+  zone_id = "${aws_route53_zone.private.zone_id}"
+  name = "{{ name }}.${var.etcd_domain_name}"
+  type = "A"
+  ttl = "300"
+  records = ["{{ ip_addr }}"]
+}

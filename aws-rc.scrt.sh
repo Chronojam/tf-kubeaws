@@ -24,25 +24,6 @@ artifact_url="https://chronojam-coreos.s3-eu-west-1.amazonaws.com"
 ca_cert=$(cat certificates/ca/ca.pem |base64 |sed ':a;N;$!ba;s/\n//g')
 
 ## Configuration
-export TF_VAR_etcd_cloud_config=$(cat config/etcd.yml)
-
-for ADDR in $WORKER_ADDR
-do
-  worker_cert=$(cat certificates/worker/$ADDR-worker.pem |base64 |sed ':a;N;$!ba;s/\n//g')
-  worker_key=$(cat certificates/worker/$ADDR-worker-key.pem |base64 |sed ':a;N;$!ba;s/\n//g')
-  t_var_name="TF_VAR_worker_cloud_config_$ADDR"
-  var_name=${t_var_name//"."/"_"}
-  var_value=$(cat config/worker.yml| \
-  sed -e "s#{{ ca_cert }}#$ca_cert#g" | \
-  sed -e "s#{{ worker_cert }}#$worker_cert#g" | \
-  sed -e "s#{{ worker_key }}#$worker_key#g" | \
-  sed -e "s#{{ artifact_url }}#$artifact_url#g")
-  # Tried several ways with eval, declare, export etc, before getting it to work like this
-  # Im trying to export variable names that have the name of the value of other variables,
-  # this makes it easier to template into terraform at a later date
-  export $( echo $var_name )="$var_value"
-  echo "Processed worker $ADDR"
-done
 
 for ADDR in $CONTROLLER_ADDR
 do
