@@ -33,30 +33,3 @@ resource "aws_security_group" "sg_debugging" {
       cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
-## Controller SG
-## This is the default configuration for the controller nodes, we allow 443 for API access.
-resource "aws_security_group" "sg_controller" {
-  vpc_id = "${aws_vpc.kubernetes_vpc.id}"
-  ingress {
-      from_port = 443
-      to_port = 443
-      protocol = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags {
-    Name = "sg_ingress"
-    KubernetesCluster = "${var.cluster_name}"
-  } 
-}
-
-## Worker SG
-## We allow nothing specific here, as this should only need to talk to internal resources.
-resource "aws_security_group" "sg_worker" {
-  vpc_id = "${aws_vpc.kubernetes_vpc.id}"
-  tags {
-    Name = "sg_worker"
-    KubernetesCluster = "${var.cluster_name}"
-  } 
-}

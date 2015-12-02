@@ -36,7 +36,3 @@ variable "etcd_instance_type" {
   description = "EC2 instance type used for each etcd instance"
 }
 
-## Controller ##
-variable "controller_cloud_config_10_0_0_50" {
-  description = "cloud config for the controller"
-}

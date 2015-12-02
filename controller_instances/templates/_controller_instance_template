@@ -1,0 +1,20 @@
+resource "aws_instance" "{{ name }}" {
+  ami = "${var.coreos_ami}"
+  instance_type = "${var.instance_type}"
+  user_data = "${file(\"controller_instances/_{{ ip_addr_f }}_userdata.yml\")}"
+  tags = {
+    role = "controller_node"
+    Name = "{{ name }}"
+    KubernetesCluster = "${var.cluster_name}"
+  }
+  key_name = "${var.keyname}"
+  security_groups = [
+    "${aws_security_group.sg_controller.id}",
+    "${var.kubernetes_sg_id}",
+    "${var.debugging_sg_id}"
+  ]
+  iam_instance_profile = "${aws_iam_instance_profile.controller_profile.name}"
+  associate_public_ip_address = false
+  private_ip = "{{ ip_addr }}"
+  subnet_id = "${var.subnet_id}"
+}

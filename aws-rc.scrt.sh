@@ -6,9 +6,6 @@
 #export TF_VAR_aws_access_key="REDACTED"
 #export TF_VAR_aws_secret_key="REDACTED"
 
-WORKER_ADDR="10.0.0.60 10.0.0.61"
-CONTROLLER_ADDR="10.0.0.50"
-
 ## Misc.
 export TF_VAR_availability_zone="eu-west-1"
 export TF_VAR_cluster_name="kubernetes"
@@ -21,21 +18,3 @@ export TF_VAR_controller_instance_type="t2.small"
 export TF_VAR_worker_instance_type="m3.medium"
 
 artifact_url="https://chronojam-coreos.s3-eu-west-1.amazonaws.com"
-ca_cert=$(cat certificates/ca/ca.pem |base64 |sed ':a;N;$!ba;s/\n//g')
-
-## Configuration
-
-for ADDR in $CONTROLLER_ADDR
-do
-  api_server_cert=$(cat certificates/api-server/$ADDR-apiserver.pem |base64 |sed ':a;N;$!ba;s/\n//g')
-  api_server_key=$(cat certificates/api-server/$ADDR-apiserver-key.pem |base64 |sed ':a;N;$!ba;s/\n//g')
-  t_var_name="TF_VAR_controller_cloud_config_$ADDR"
-  var_name=${t_var_name//"."/"_"}
-  var_value=$(cat config/controller.yml| \
-  sed -e "s#{{ ca_cert }}#$ca_cert#g" | \
-  sed -e "s#{{ api_server_cert }}#$api_server_cert#g" | \
-  sed -e "s#{{ api_server_key }}#$api_server_key#g" | \
-  sed -e "s#{{ artifact_url }}#$artifact_url#g" )
-  export $( echo $var_name )="$var_value"
-  echo "Processed controller $ADDR"
-done

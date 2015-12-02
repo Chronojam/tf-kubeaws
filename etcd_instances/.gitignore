@@ -1,4 +1,7 @@
+# Things specific to a deployment
 _*
+etcd_discovery.tf
+
 !templates/_*
 templates/_srv_records
 terraform.tfvars
