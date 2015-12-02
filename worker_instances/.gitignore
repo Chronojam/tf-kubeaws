@@ -1,4 +1,7 @@
+# All certificates, keys and instance profiles + userdata
 _*
 !templates/_*
 templates/_srv_records
 terraform.tfvars
+
+*.srl
