@@ -1,7 +1,6 @@
 # TLDR We have 3 security groups, each allows all access from the others, and ssh from external sources.
 # The controller securit group also allows HTTPS from external sources (So we can access the API)
 
-
 ## Kubernetes internal SG
 ## This group allows all access between instances inside it
 ## It also allows all outbound traffic.
@@ -61,13 +60,3 @@ resource "aws_security_group" "sg_worker" {
     KubernetesCluster = "${var.cluster_name}"
   } 
 }
-
-## Etcd SG
-## We allow nothing specific here, as this should only need to talk to internal resources.
-resource "aws_security_group" "sg_etcd" {
-  vpc_id = "${aws_vpc.kubernetes_vpc.id}"
-  tags {
-    Name = "sg_etcd"
-    KubernetesCluster = "${var.cluster_name}"
-}
-
