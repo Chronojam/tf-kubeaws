@@ -5,7 +5,7 @@ module "controller_instances" {
   subnet_id = "${aws_subnet.kubernetes_subnet.id}"
   keyname = "${var.key_name}"
   coreos_ami = "${var.coreos_ami}"
-  instance_type = "${var.etcd_instance_type}"
+  instance_type = "${var.controller_instance_type}"
 
   debugging_sg_id = "${aws_security_group.sg_debugging.id}"
   kubernetes_sg_id = "${aws_security_group.sg_kubernetes_internal.id}"
@@ -18,7 +18,7 @@ module "worker_instances" {
   subnet_id = "${aws_subnet.kubernetes_subnet.id}"
   keyname = "${var.key_name}"
   coreos_ami = "${var.coreos_ami}"
-  instance_type = "${var.etcd_instance_type}"
+  instance_type = "${var.worker_instance_type}"
 
   debugging_sg_id = "${aws_security_group.sg_debugging.id}"
   kubernetes_sg_id = "${aws_security_group.sg_kubernetes_internal.id}"

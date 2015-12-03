@@ -34,8 +34,8 @@ write_files:
 
 - path: /etc/kubernetes/ssl/apiserver.pem
   encoding: base64
-  content: {{ api_server_cert }}
+  content: {{ controller_cert }}
 
 - path: /etc/kubernetes/ssl/apiserver-key.pem
   encoding: base64
-  content: {{ api_server_key }}
+  content: {{ controller_key }}
