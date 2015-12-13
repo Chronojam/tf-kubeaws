@@ -23,53 +23,32 @@ edit the aws-rc.scrt.sh file to add your AWS keys, and other changes you might m
 
     $] vim tf-kubeaws/aws-rc.scrt.sh
 
+Create or add your CA cert and key to the root of the certificates folder:
 
-You'll either want to generate your own certificates, or use your own, if you want to generate them, then you can run the scripts inside the certificate folder (Note that the certificate paths have to match up with what's inside the aws-rc.scrt file):  
+New Key:
+    $] cd certificates/
+    $] ./root_ca.sh
 
-    $] tf-kubeaws/certificates/ca/root-ca.sh
-    $] tf-kubeaws/certificates/api-server/api-server.sh
-    $] tf-kubeaws/certificates/worker/worker.sh
+Existing Key:
+( Note, because of the lack of customization currently in the instance creation scripts, these have to be this exact name and in this location )
+    $] mv path/to/my/ca-key.pem certificates/ca-key.pem
+    $] mv path/to/my/ca.pem certificates/ca.pem
 
+Then you can add various components (etcd servers, worker's, controllers)
+by running the appropriate creation script
+
+( these are rough-and-ready, so there is currently very little room for customization, although feel free to change the worker and etcd server ips as you see fit, we currently only support a single controller and it has to have ip 10.0.0.50 ( ability to add more is coming later ) )
+    $] cd controller_instances/
+    $] ./new_controller.sh 10.0.0.50
+
+    $] cd worker_instances/
+    $] ./new_worker.sh 10.0.0.60
+    $] ./new_worker.sh 10.0.0.61
+
+    $] cd etcd_instances/
+    $] ./new_etcd.sh 10.0.0.20
+    $] ./new_etcd.sh 10.0.0.21
 
 Then you can just run:
-
-    $] cd tf-kubeaws
     $] terraform apply
 
-rc.scrt.sh variables
---
-
-###Terraform Variables
-- TF\_VAR\_aws\_access\_key : Your AWS Access key
-- TF\_VAR\_aws\_secret\_key  : Your AWS Secret Access key
-- TF\_VAR\_availability\_zone : Where you want the cluster to spawn [ Default : eu-west-1 ]
-- TF\_VAR\_cluster\_name : The name of your cluster [ Default : kubernetes ]
-- TF\_VAR\_key\_name : The SSH key pair name that you'll want to access the machines.
-- TF\_VAR\_coreos\_ami: The ami of a CoreOS image, you should only need to change this if you are also changing the avaliabilty zone [ Default:  ami-eb97bc9c ]
-- TF\_VAR\_etcd\_instance\_type : what size you want the etcd instances to be [ Default: t2.small ]
-- TF\_VAR\_controller\_instance\_type :  what size you want the controller instances to be [ Default: t2.small ]
-- TF\_VAR\_worker\_instance\_type: what size you want the worker instances to be [ Default: t3.medium ]
-
-
-### Controller Specific.
-If you are using custom certificates, make sure to update the values here.
-  
-- api\_server\_cert=$(cat certificates/api-server/apiserver.pem |base64 |sed ':a;N;$!ba;s/\n//g')  
-- api\_server\_key=$(cat certificates/api-server/apiserver-key.pem |base64 |sed ':a;N;$!ba;s/\n//g')
-
-### Worker Specific.
-likewise, if you are using custom certificates, make sure you update it here
-  
-- worker\_cert=$(cat certificates/worker/worker.pem |base64 |sed ':a;N;$!ba;s/\n//g')  
-- worker\_key=$(cat certificates/worker/worker-key.pem |base64 |sed ':a;N;$!ba;s/\n//g')
-
-
-### Misc
-- artifact\_url="https://chronojam-coreos.s3-eu-west-1.amazonaws.com"  
-  if you have updated the artifacts, you'll need to point this to the location where they are hosted.
-- ca\_cert=$(cat certificates/ca/ca.pem |base64 |sed ':a;N;$!ba;s/\n//g')  
-  if you have custom certs, make sure to update this.
-
-Debugging
--
-wip
