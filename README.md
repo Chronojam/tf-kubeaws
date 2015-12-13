@@ -31,6 +31,7 @@ New Key:
 
 Existing Key:
 ( Note, because of the lack of customization currently in the instance creation scripts, these have to be this exact name and in this location )
+
     $] mv path/to/my/ca-key.pem certificates/ca-key.pem
     $] mv path/to/my/ca.pem certificates/ca.pem
 
@@ -38,6 +39,7 @@ Then you can add various components (etcd servers, worker's, controllers)
 by running the appropriate creation script
 
 ( these are rough-and-ready, so there is currently very little room for customization, although feel free to change the worker and etcd server ips as you see fit, we currently only support a single controller and it has to have ip 10.0.0.50 ( ability to add more is coming later ) )
+
     $] cd controller_instances/
     $] ./new_controller.sh 10.0.0.50
 
@@ -50,5 +52,6 @@ by running the appropriate creation script
     $] ./new_etcd.sh 10.0.0.21
 
 Then you can just run:
+
     $] terraform apply
 
