@@ -19,11 +19,27 @@ worker_cert=$(cat _$ip_addr_f\_worker.pem |base64 |sed ':a;N;$!ba;s/\n//g')
 worker_key=$(cat _$ip_addr_f\_worker_key.pem |base64 |sed ':a;N;$!ba;s/\n//g')
 ca_cert=$(cat $CA_CERT_PATH |base64 |sed ':a;N;$!ba;s/\n//g')
 
+addresses=$(cat ../etcd_instances/templates/_srv_records|awk '{ print $4 }' | \
+  sed 's/.${var.etcd_domain_name}"//g' | \
+  sed 's/etcd_//g' | \
+  sed 's/_/./g')
+
+etcd_servers=""
+for addr in $addresses
+do
+  if [ -z "$etcd_servers" ]; then
+    etcd_servers="http://$addr:2379"
+  else
+    etcd_servers="$etcd_servers,http://$addr:2379"
+  fi
+done
+
 cat config/worker.yml | \
   sed -e "s#{{ ca_cert }}#$ca_cert#g" | \
   sed -e "s#{{ worker_cert }}#$worker_cert#g" | \
   sed -e "s#{{ worker_key }}#$worker_key#g" | \
-  sed -e "s#{{ artifact_url }}#$artifact_url#g" >> _$ip_addr_f\_userdata.yml
+  sed -e "s#{{ artifact_url }}#$artifact_url#g" | \
+  sed -e "s#{{ etcd_servers }}#$etcd_servers#g"  >> _$ip_addr_f\_userdata.yml
 
 template=$(cat templates/_worker_instance_template| \
   sed -e "s#{{ ip_addr }}#$ip_addr#g" | \

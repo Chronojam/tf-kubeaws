@@ -5,7 +5,7 @@ resource "aws_vpc" "kubernetes_vpc" {
     instance_tenancy = "default"
 
     tags {
-        Name = "kubernetes_vpc"
+        Name = "kubernetes-vpc"
         KubernetesCluster = "${var.cluster_name}"
     }
 }
